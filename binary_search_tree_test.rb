@@ -30,13 +30,20 @@ class BinarySearchTreeTest < Minitest::Test
     assert_equal 110, @bst.root.right_child.score
   end
 
-  def test_node_is_inserted_correctly_if_root_and_child_are_not_nil
+  def test_node_is_inserted_correctly_if_root_and_child_are_not_nil_right
     @bst.insert(100, "Fifth Element")
     @bst.insert(110, "Pulp Fiction")
     @bst.insert(112, "Knight's Tale")
     assert_equal 112, @bst.root.right_child.right_child.score
   end
 
+
+  def test_node_is_inserted_correctly_if_root_and_child_are_not_nil_left
+      @bst.insert(100, "Fifth Element")
+      @bst.insert(90, "Star Wars")
+      @bst.insert(85, "Fight Club")
+      assert_equal 85, @bst.root.left_child.left_child.score
+  end
 
   def test_node_is_included_into_the_tree
     skip
