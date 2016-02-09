@@ -39,15 +39,22 @@ class BinarySearchTreeTest < Minitest::Test
 
 
   def test_node_is_inserted_correctly_if_root_and_child_are_not_nil_left
-      @bst.insert(100, "Fifth Element")
-      @bst.insert(90, "Star Wars")
-      @bst.insert(85, "Fight Club")
-      assert_equal 85, @bst.root.left_child.left_child.score
+    @bst.insert(100, "Fifth Element")
+    @bst.insert(90, "Star Wars")
+    @bst.insert(85, "Fight Club")
+    assert_equal 85, @bst.root.left_child.left_child.score
   end
 
   def test_node_is_included_into_the_tree
-    skip
-    assert @bst.include?(100, "Fifth Element"), @bst.insert(100, "Fifth Element")
+    @bst.insert(100, "Fifth Element")
+    assert @bst.include?(100, "Fifth Element")
+  end
+
+  def test_node_is_included_into_the_tree_multiple_node
+    @bst.insert(100, "Fifth Element")
+    @bst.insert(90, "Star Wars")
+    @bst.insert(85, "Fight Club")
+    assert @bst.include?(85, "Fight Club")
   end
 
 

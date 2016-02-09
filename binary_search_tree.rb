@@ -1,13 +1,17 @@
+require 'pry'
+require_relative 'node'
+
+
 class BinarySearchTree
-  attr_reader :root
+  attr_accessor :root
 
   def initialize
     @root = nil
   end
 
-  def insert(score, name, current_node=@root)
+  def insert(score, name, depth=0, current_node=@root)
     if @root == nil
-      @root = Node.new(score, name)
+      @root = Node.new(score, name, depth)
     elsif (score < current_node.score)
       # split up
       if  current_node.left_child == nil
@@ -28,16 +32,32 @@ class BinarySearchTree
   end
 
   def include?(score, name, current_node=@root)
-    if score == current_node
-      true
-    elsif score == current_node.left_child
-      true
-
-    elsif score == current.node.right_child
-      true
+    if @root == nil
+      false
     else
+      if score == @root.score
+        true
+      elsif score < current_node.score
+        # split up
+        if  current_node.left_child.score == score
+            true
+        else
+           current_node = current_node.left_child
+           include?(score, name, current_node)
+        end
+      elsif score > current_node.score
+        # split up
+        if current_node.right_child.score == score
+            true
+        else
+           current_node = current_node.right_child
+           include?(score, name, current_node)
+        end
+      else
+        false
+      end
     end
-  end
+   end
 
 
 
