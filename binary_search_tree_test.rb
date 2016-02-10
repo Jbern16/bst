@@ -101,7 +101,18 @@ class BinarySearchTreeTest < Minitest::Test
     assert_equal Hash["Fight Club", 85], @bst.min
   end
 
-  def sort_nodes
+  def test_sort_returns_a_sorted_array_of_hashes_from_lowest_to_highest
+    @bst.insert(100, "Fifth Element")
+    @bst.insert(110, "Pulp Fiction")
+    @bst.insert(90, "Star Wars")
+    @bst.insert(85, "Fight Club")
+    assert_equal [ Hash["Fight Club", 85],
+     Hash["Star Wars", 90],
+     Hash["Fifth Element", 100],
+     Hash["Pulp Fiction", 110]], @bst.sort
+  end
+
+
 
 
 
