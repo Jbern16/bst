@@ -46,16 +46,63 @@ class BinarySearchTreeTest < Minitest::Test
   end
 
   def test_node_is_included_into_the_tree
-    @bst.insert(100, "Fifth Element")
-    assert @bst.include?(100, "Fifth Element")
+    @bst.insert(100)
+    assert @bst.include?(100)
   end
 
-  def test_node_is_included_into_the_tree_multiple_node
+  def test_node_is_included_into_the_tree_multiple_nodes
+    @bst.insert(100)
+    @bst.insert(90)
+    @bst.insert(85)
+    assert @bst.include?(85)
+  end
+
+  def test_node_has_a_depth_of_0_at_root
+    @bst.insert(100, "Fifth Element")
+    assert_equal 0, @bst.depth_of(100)
+  end
+
+
+  def test_node_has_a_depth_of_2_when_it_has_two_parents_left_child
     @bst.insert(100, "Fifth Element")
     @bst.insert(90, "Star Wars")
     @bst.insert(85, "Fight Club")
-    assert @bst.include?(85, "Fight Club")
+    assert_equal 2, @bst.depth_of(85)
+
   end
+
+  def test_node_has_a_depth_of_2_when_it_has_two_parents_right_child
+    @bst.insert(100, "Fifth Element")
+    @bst.insert(110, "Pulp Fiction")
+    @bst.insert(112, "Knight's Tale")
+    assert_equal 2, @bst.depth_of(112)
+  end
+
+  def test_node_depth_mixed_children
+    @bst.insert(100, "Fifth Element")
+    @bst.insert(110, "Pulp Fiction")
+    @bst.insert(90, "Star Wars")
+    @bst.insert(112, "Knight's Tale")
+    @bst.insert(85, "Fight Club")
+    assert_equal 2, @bst.depth_of(85)
+  end
+
+  def test_find_max_score
+    @bst.insert(100, "Fifth Element")
+    @bst.insert(110, "Pulp Fiction")
+    @bst.insert(112, "Knight's Tale")
+    assert_equal Hash["Knight's Tale", 112], @bst.max
+  end
+
+  def test_find_min_score
+    @bst.insert(100, "Fifth Element")
+    @bst.insert(90, "Star Wars")
+    @bst.insert(85, "Fight Club")
+    assert_equal Hash["Fight Club", 85], @bst.min
+  end
+
+  def sort_nodes
+
 
 
 

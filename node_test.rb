@@ -21,11 +21,9 @@ class NodeTest < Minitest::Test
     assert_equal nil, node.right_child
   end
 
-  def test_node_has_a_depth_of_0_at_root
-    bst = BinarySearchTree.new
-    node = bst.insert(100, "Fifth Element")
-    assert_equal 0, node.depth
-  end
+
+
+
 
 
 end
