@@ -1,4 +1,5 @@
 require 'pry'
+require 'csv'
 require_relative 'node'
 
 
@@ -18,6 +19,7 @@ class BinarySearchTree
     elsif score > current_node.score
       insert_right(score, name, current_node)
     end
+    depth_of(score)
   end
 
 
@@ -40,68 +42,32 @@ class BinarySearchTree
   end
 
 
-  def include?(score, name=nil, current_node=@root)
-    if score == @root.score
-      true
-    elsif score < current_node.score
-      included_left?(score, name=nil, current_node)
-      true
-    elsif score > current_node.score
-      included_right?(score, name=nil, current_node)
-      true
-    else
+  def include?(score, current_node=@root)
+    if current_node == nil
       false
-    end
-  end
-
-
-   def included_right?(score, name=nil, current_node)
-     if current_node.right_child == score
-     else
-       current_node = current_node.right_child
-       include?(score, name, current_node)
-     end
-   end
-
-   def included_left?(score, name=nil, current_node)
-     if current_node.left_child == score
-     else
-       current_node = current_node.left_child
-       include?(score, name, current_node)
-     end
-   end
-
-   def depth_of(score, current_node=@root)
-     if current_node == nil
-      nil
-    elsif current_node.score == score
-      0
+    elsif score == current_node.score
+      true
     elsif score < current_node.score
-      depth_left(score, current_node)
-      @depth
-    elsif score > current_node.score
-      depth_right(score, current_node)
-      @depth
+      include?(score, current_node.left_child)
     else
+      include?(score, current_node.right_child)
+    end
+  end
+
+
+   def depth_of(score, current_node=@root, depth = 0)
+     if @root == nil
       nil
-    end
-  end
-
-  def depth_left(score, current_node)
-    @depth += 1
-    if current_node.left_child == score
     else
-      current_node = current_node.left_child
-      depth_of(score, current_node)
-    end
-  end
-
-  def depth_right(score, current_node)
-    @depth += 1
-    if current_node.right_child == score
-    else
-      current_node = current_node.right_child
-      depth_of(score, current_node)
+      if current_node.score == score
+        depth
+      elsif score < current_node.score
+        depth += 1
+        depth_of(score, current_node.left_child, depth)
+      else
+        depth += 1
+        depth_of(score, current_node.right_child, depth)
+      end
     end
   end
 
@@ -135,28 +101,97 @@ class BinarySearchTree
     if current_node.left_child != nil
       sort_helper(current_node.left_child)
     end
-    @sorted_tree << {current_node.name => current_node.score}
+    @sorted_tree << {current_node.name => current_node.score.to_i}
     if current_node.right_child != nil
       sort_helper(current_node.right_child)
     end
     @sorted_tree
   end
 
+  # def load(file)
+  #   csv_file = CSV.read(file)
+  #   csv_file.select do |score, name|
+  #     !include?(score.to_i)
+  #   end.map do |score, name|
+  #     score = score.to_i
+  #       movies = Hash[score.to_i, name.lstrip!]
+  #       movies.each_pair do |score, name|
+  #         insert(score, name)
+  #       end
+  #   end.size
+  # end
+
+  def load(file)
+    lines = CSV.read(file)
+    lines.count do |score, name|
+      if include?(score.to_i) != true
+        insert(score.to_i, name.lstrip)
+      end
+    end
+  end
+
+  def health(depth)
+    @children = 1
+    @health_report = []
+    @node_array = []
+    start_health(depth)
+  end
+
+  def start_health(depth)
+    if @root == nil
+      nil
+    elsif depth == 0
+      child = children_counter(@root.score, @root)
+      @node_array << @root.score
+      @node_array << child + 1
+      @node_array << 100
+      @health_report << @node_array
+      health_report
+    else
+      health_helper(depth, @root)
+      @health_report
+    end
+  end
 
 
+  def health_helper(depth, current_node)
+    if depth_of(current_node.score) == depth
+      @counter = 0
+      @counter = children_counter(current_node.score, current_node) + 1
+      @node_array << current_node.score
+      @node_array << @counter
+      @node_array << ((@counter / sort.size.to_f) * 100).floor
+      @health_report << @node_array
+      @node_array = []
+      @health_report
+    end
+    confirm_children(depth, current_node)
+  end
 
 
+  def confirm_children(depth,current_node)
+    if current_node.left_child != nil
+     health_helper(depth, current_node.left_child)
+    end
+    if current_node.right_child != nil
+     health_helper(depth, current_node.right_child)
+    end
+  end
 
-
-
-
-
-
-
-
-
-
-
+  def children_counter(start, current_node)
+    if current_node.score == start
+      @counter = 0
+    end
+    if current_node.left_child != nil
+      @counter += 1
+      children_counter(start, current_node.left_child)
+    end
+    if current_node.right_child != nil
+      @counter += 1
+      children_counter(start, current_node.right_child)
+    end
+    @counter
+  end
 
 
 end
